@@ -99,6 +99,11 @@
       <artifactId>jts-core</artifactId>
       <version>${jts.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>31.0.1-jre</version>
+    </dependency>
     <!-- END COMPILE DEPENDENCIES !-->
 
 

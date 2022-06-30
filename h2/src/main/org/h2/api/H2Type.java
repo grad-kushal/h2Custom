@@ -11,12 +11,18 @@ import org.h2.value.ExtTypeInfoRow;
 import org.h2.value.TypeInfo;
 import org.h2.value.Value;
 
+
 /**
  * Data types of H2.
  */
 public final class H2Type implements SQLType {
 
     // Character strings
+
+    /**
+     * The CONTACT data type.
+     */
+    public static final H2Type CONTACT = new H2Type(TypeInfo.getTypeInfo(Value.CONTACT), "CONTACT");
 
     /**
      * The CHARACTER data type.
