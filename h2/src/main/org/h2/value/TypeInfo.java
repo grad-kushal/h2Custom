@@ -207,6 +207,11 @@ public class TypeInfo extends ExtTypeInfo implements Typed {
      */
     public static final TypeInfo TYPE_ROW_EMPTY;
 
+    /**
+     * CONTACT type with fields.
+     */
+    public static final TypeInfo TYPE_CONTACT;
+
     private static final TypeInfo[] TYPE_INFOS_BY_VALUE_TYPE;
 
     private final int valueType;
@@ -272,6 +277,7 @@ public class TypeInfo extends ExtTypeInfo implements Typed {
         infos[Value.ARRAY] = TYPE_ARRAY_UNKNOWN = new TypeInfo(Value.ARRAY);
         infos[Value.ROW] = TYPE_ROW_EMPTY = new TypeInfo(Value.ROW, -1L, -1, //
                 new ExtTypeInfoRow(new LinkedHashMap<>()));
+        infos[Value.CONTACT] = TYPE_CONTACT = new TypeInfo(Value.CONTACT);
         TYPE_INFOS_BY_VALUE_TYPE = infos;
     }
 
@@ -500,6 +506,8 @@ public class TypeInfo extends ExtTypeInfo implements Typed {
                 throw new IllegalArgumentException();
             }
             return new TypeInfo(Value.ROW, -1L, -1, extTypeInfo);
+        case Value.CONTACT:
+            return new TypeInfo(Value.CONTACT);
         }
         return TYPE_NULL;
     }
@@ -1269,6 +1277,7 @@ public class TypeInfo extends ExtTypeInfo implements Typed {
     @Override
     public StringBuilder getSQL(StringBuilder builder, int sqlFlags) {
         switch (valueType) {
+        case Value.CONTACT:
         case Value.CHAR:
         case Value.VARCHAR:
         case Value.CLOB:

@@ -33,6 +33,9 @@ abstract class ValueStringBase extends Value {
         this.value = v;
     }
 
+    public ValueStringBase() {
+    }
+
     @Override
     public final TypeInfo getType() {
         TypeInfo type = this.type;

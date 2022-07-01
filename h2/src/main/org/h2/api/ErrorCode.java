@@ -2240,6 +2240,12 @@ public class ErrorCode {
      */
     public static final int GROUP_BY_NOT_IN_THE_RESULT = 90157;
 
+    /**
+     * The error with code <code>90158</code> is thrown when the
+     * contact number is not valid
+     */
+    public static final int INVALID_CONTACT_ERROR_CODE = 90158;
+
     // next is 90158
 
     private ErrorCode() {
