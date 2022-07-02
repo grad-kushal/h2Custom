@@ -8,11 +8,28 @@ import org.h2.message.DbException;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Contact implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private String contact;
+
+    public static boolean verifyAndInitializeContact(String c) {
+        PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
+        Phonenumber.PhoneNumber phoneNumber = null;
+
+        String regex = "^\\([4-6]{1}[0-9]{2}\\)[0-9]{3}-[0-9]{4}$";
+        Pattern contactPattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher contactMatcher = contactPattern.matcher(c);
+        System.out.println("Match: "+ contactMatcher.matches());
+        if (contactMatcher.matches()){
+            return  true;
+        } else {
+            return false;
+        }
+    }
 
     Contact(Contact c) {
         verifyAndInitializeContact(c);

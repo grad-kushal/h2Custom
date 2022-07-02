@@ -1277,7 +1277,6 @@ public class TypeInfo extends ExtTypeInfo implements Typed {
     @Override
     public StringBuilder getSQL(StringBuilder builder, int sqlFlags) {
         switch (valueType) {
-        case Value.CONTACT:
         case Value.CHAR:
         case Value.VARCHAR:
         case Value.CLOB:
@@ -1292,22 +1291,25 @@ public class TypeInfo extends ExtTypeInfo implements Typed {
                 builder.append('(').append(precision).append(')');
             }
             break;
-        case Value.NUMERIC: {
-            if (extTypeInfo != null) {
-                extTypeInfo.getSQL(builder, sqlFlags);
-            } else {
-                builder.append("NUMERIC");
-            }
-            boolean withPrecision = precision >= 0;
-            boolean withScale = scale >= 0;
-            if (withPrecision || withScale) {
-                builder.append('(').append(withPrecision ? precision : Constants.MAX_NUMERIC_PRECISION);
-                if (withScale) {
-                    builder.append(", ").append(scale);
-                }
-                builder.append(')');
-            }
+        case Value.CONTACT:
+            builder.append(Value.getTypeName(valueType));
             break;
+        case Value.NUMERIC: {
+        if (extTypeInfo != null) {
+            extTypeInfo.getSQL(builder, sqlFlags);
+        } else {
+            builder.append("NUMERIC");
+        }
+        boolean withPrecision = precision >= 0;
+        boolean withScale = scale >= 0;
+        if (withPrecision || withScale) {
+            builder.append('(').append(withPrecision ? precision : Constants.MAX_NUMERIC_PRECISION);
+            if (withScale) {
+                builder.append(", ").append(scale);
+            }
+            builder.append(')');
+        }
+        break;
         }
         case Value.REAL:
         case Value.DOUBLE:

@@ -130,6 +130,7 @@ public class DataType {
                 "NCLOB", "NCHAR LARGE OBJECT", "NATIONAL CHARACTER LARGE OBJECT");
         add(Value.VARCHAR_IGNORECASE, Types.VARCHAR, createString(false, false), "VARCHAR_IGNORECASE");
         add(Value.BINARY, Types.BINARY, createBinary(true), "BINARY");
+        add(Value.CONTACT, 42, creatContact(), "CONTACT", "PHONE", "CELL");
         add(Value.VARBINARY, Types.VARBINARY, createBinary(false),
                 "BINARY VARYING", "VARBINARY", "RAW", "BYTEA", "LONG RAW", "LONGVARBINARY");
         add(Value.BLOB, Types.BLOB, createLob(false),
@@ -205,6 +206,11 @@ public class DataType {
         dataType.suffix = ")";
         dataType.params = "NAME DATA_TYPE [,...]";
         add(Value.ROW, Types.OTHER, dataType, "ROW");
+    }
+
+    private static DataType creatContact() {
+        DataType dataType = new DataType();
+        return dataType;
     }
 
     private static void addInterval(int type) {

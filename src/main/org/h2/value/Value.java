@@ -265,7 +265,7 @@ public abstract class Value extends VersionedValue<Value> implements HasSQL, Typ
     public static final int ROW = ARRAY + 1;
 
     /**
-     * The value type for PASSWORD values.
+     * The value type for CONTACT values.
      */
     public static final int CONTACT = ROW + 1;
 
@@ -372,7 +372,7 @@ public abstract class Value extends VersionedValue<Value> implements HasSQL, Typ
             "INTERVAL DAY TO HOUR", "INTERVAL DAY TO MINUTE", "INTERVAL DAY TO SECOND", //
             "INTERVAL HOUR TO MINUTE", "INTERVAL HOUR TO SECOND", "INTERVAL MINUTE TO SECOND", //
             "JAVA_OBJECT", "ENUM", "GEOMETRY", "JSON", "UUID", //
-            "ARRAY", "ROW", //
+            "ARRAY", "ROW", "CONTACT"//
     };
 
     /**
@@ -1188,6 +1188,8 @@ public abstract class Value extends VersionedValue<Value> implements HasSQL, Typ
             return convertToArray(targetType, provider, conversionMode, column);
         case ROW:
             return convertToRow(targetType, provider, conversionMode, column);
+        case CONTACT:
+            return convertToContact(targetType, provider, conversionMode, column);
         default:
             throw getDataConversionError(targetValueType);
         }
@@ -1200,6 +1202,28 @@ public abstract class Value extends VersionedValue<Value> implements HasSQL, Typ
      */
     public ValueChar convertToChar() {
         return convertToChar(TypeInfo.getTypeInfo(CHAR), null, CONVERT_TO, null);
+    }
+
+    private ValueStringBase convertToContact(TypeInfo targetType, CastDataProvider provider, int conversionMode, Object column) {
+//        ValueStringBase temp = convertToChar(targetType, provider, conversionMode, column);
+//        return  temp;
+
+        int valueType = getValueType();
+        switch (valueType) {
+            case BLOB:
+            case JAVA_OBJECT:
+                throw getDataConversionError(targetType.getValueType());
+        }
+        String s = getString();
+
+        boolean flag = Contact.verifyAndInitializeContact(s);
+
+        if (flag) {
+            System.out.println(s + " " +  s.length() + " " + flag);
+            return ValueContact.get(s);
+        }
+        else
+            throw DbException.get(ErrorCode.INVALID_CONTACT_ERROR_CODE);
     }
 
     private ValueChar convertToChar(TypeInfo targetType, CastDataProvider provider, int conversionMode, //
