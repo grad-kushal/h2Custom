@@ -230,4 +230,9 @@ public enum AggregateType {
      */
     JSON_ARRAYAGG,
 
+    /**
+     * The aggregate type for nth max element.
+     */
+    NTH_MAX,
+
 }

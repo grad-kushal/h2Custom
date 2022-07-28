@@ -118,7 +118,7 @@ class Database {
             try {
                 serverH2 = Server.createTcpServer("-ifNotExists").start();
             } catch (SQLException e) {
-                serverH2 = Server.createTcpServer().start();
+                serverH2 = Server.createTcpServer("-ifNotExists").start();
             }
             Thread.sleep(100);
         } else if (url.startsWith("jdbc:derby://")) {

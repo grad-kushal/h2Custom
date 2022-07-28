@@ -50,6 +50,7 @@ final class AggregateDataDefault extends AggregateData {
                 value = v;
             }
             break;
+        case NTH_MAX:
         case MAX:
             if (value == null || session.compare(v, value) > 0) {
                 value = v;

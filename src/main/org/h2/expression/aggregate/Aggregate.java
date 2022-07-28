@@ -176,6 +176,8 @@ public class Aggregate extends AbstractAggregate implements ExpressionWithFlags 
 
         addAggregate("JSON_OBJECTAGG", AggregateType.JSON_OBJECTAGG);
         addAggregate("JSON_ARRAYAGG", AggregateType.JSON_ARRAYAGG);
+        // Custom compatibility
+        addAggregate("NTH_MAX", AggregateType.NTH_MAX);
     }
 
     private static void addAggregate(String name, AggregateType type) {
@@ -438,6 +440,7 @@ public class Aggregate extends AbstractAggregate implements ExpressionWithFlags 
             //$FALL-THROUGH$
         case MIN:
         case MAX:
+        case NTH_MAX:
         case BIT_AND_AGG:
         case BIT_OR_AGG:
         case BIT_NAND_AGG:
@@ -507,6 +510,23 @@ public class Aggregate extends AbstractAggregate implements ExpressionWithFlags 
             Table table = select.getTopTableFilter().getTable();
             return ValueBigint.get(table.getRowCount(session));
         case MIN:
+        case NTH_MAX: {
+            boolean firstFlag = aggregateType == AggregateType.NTH_MAX;
+            Index index = getMinMaxColumnIndex();
+            int sortType = index.getIndexColumns()[0].sortType;
+            if ((sortType & SortOrder.DESCENDING) != 0) {
+                firstFlag = !firstFlag;
+            }
+            Cursor cursor = index.findFirstOrLast(session, firstFlag);
+            SearchRow row = cursor.getSearchRow();
+            Value v;
+            if (row == null) {
+                v = ValueNull.INSTANCE;
+            } else {
+                v = row.getValue(index.getColumns()[0].getColumnId());
+            }
+            return v;
+        }
         case MAX: {
             boolean first = aggregateType == AggregateType.MIN;
             Index index = getMinMaxColumnIndex();
@@ -987,6 +1007,7 @@ public class Aggregate extends AbstractAggregate implements ExpressionWithFlags 
             }
             break;
         case MIN:
+        case NTH_MAX:
         case MAX:
             break;
         case STDDEV_POP:
@@ -1278,6 +1299,7 @@ public class Aggregate extends AbstractAggregate implements ExpressionWithFlags 
             case COUNT_ALL:
                 return visitor.getTable().canGetRowCount(select.getSession());
             case MIN:
+            case NTH_MAX:
             case MAX:
                 return getMinMaxColumnIndex() != null;
             case PERCENTILE_CONT:

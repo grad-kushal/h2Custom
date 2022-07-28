@@ -407,7 +407,7 @@ import org.h2.value.ValueUuid;
 import org.h2.value.ValueVarchar;
 
 /**
- * The parser is used to convert a SQL statement string to an command object.
+ * The parser is used to convert a SQL statement string to a command object.
  *
  * @author Thomas Mueller
  * @author Noel Grandin
@@ -3437,6 +3437,7 @@ public class Parser {
             expectedList = null;
             throw getSyntaxError();
         }
+        System.out.println("1. AggregateType:" + aggregateType);
         Aggregate r;
         switch (aggregateType) {
         case COUNT:
@@ -3595,9 +3596,11 @@ public class Parser {
         }
         default:
             boolean distinct = readDistinctAgg();
+            System.out.println("2. Distinct: " + distinct);
             r = new Aggregate(aggregateType, new Expression[] { readExpression() }, currentSelect, distinct);
             break;
         }
+        System.out.println("3. Aggregate r: " + r);
         read(CLOSE_PAREN);
         readFilterAndOver(r);
         return r;
@@ -3710,8 +3713,10 @@ public class Parser {
     private void readOver(DataAnalysisOperation operation) {
         if (readIf("OVER")) {
             operation.setOverCondition(readWindowNameOrSpecification());
+            System.out.println("4. Here: " + operation);
             currentSelect.setWindowQuery();
         } else if (operation.isAggregate()) {
+            System.out.println("5. Here: " + operation);
             currentSelect.setGroupQuery();
         } else {
             throw getSyntaxError();
@@ -3827,34 +3832,43 @@ public class Parser {
 
     private Expression readFunction(Schema schema, String name) {
         String upperName = upperName(name);
+        System.out.println("Schema: " + schema + "UpperName: " + upperName);
         if (schema != null) {
             return readFunctionWithSchema(schema, name, upperName);
         }
         boolean allowOverride = database.isAllowBuiltinAliasOverride();
+        System.out.println("allowOverride: " + allowOverride);
         if (allowOverride) {
+            System.out.println(1);
             Expression e = readUserDefinedFunctionIf(null, name);
+            System.out.println(2 + " " + e);
             if (e != null) {
                 return e;
             }
         }
         AggregateType agg = Aggregate.getAggregateType(upperName);
+        System.out.println(" Agg: " + agg);
         if (agg != null) {
             return readAggregate(agg, upperName);
         }
         Expression e = readBuiltinFunctionIf(upperName);
+        System.out.println(" Expression:" + 3 + ": " + e);
         if (e != null) {
             return e;
         }
         e = readWindowFunction(upperName);
+        System.out.println(" Expression:" + 4 + ": " + e);
         if (e != null) {
             return e;
         }
         e = readCompatibilityFunction(upperName);
+        System.out.println(" Expression:" + 5 + ": " + e);
         if (e != null) {
             return e;
         }
         if (!allowOverride) {
             e = readUserDefinedFunctionIf(null, name);
+            System.out.println("" + 7 + ": " + e);
             if (e != null) {
                 return e;
             }
