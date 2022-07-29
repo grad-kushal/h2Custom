@@ -21,6 +21,7 @@ final class AggregateDataDefault extends AggregateData {
     private final AggregateType aggregateType;
     private final TypeInfo dataType;
     private Value value;
+    private Value lower;
 
     /**
      * @param aggregateType the type of the aggregate operation
@@ -51,8 +52,15 @@ final class AggregateDataDefault extends AggregateData {
             }
             break;
         case NTH_MAX:
+            if (value == null || session.compare(v, value) > 0) {
+                System.out.println("In AggregateDataDefault: " + value + " : " + v);
+                lower = value;
+                value = v;
+            }
+            break;
         case MAX:
             if (value == null || session.compare(v, value) > 0) {
+                System.out.println("In AggregateDataDefault: " + value + " : " + v);
                 value = v;
             }
             break;
@@ -105,6 +113,11 @@ final class AggregateDataDefault extends AggregateData {
     @Override
     Value getValue(SessionLocal session) {
         Value v = value;
+        if (aggregateType.equals(AggregateType.NTH_MAX)) {
+            System.out.println("InsideNMAX CASE IN GET VALUE: ");
+            v = lower;
+        }
+
         if (v == null) {
             return ValueNull.INSTANCE;
         }

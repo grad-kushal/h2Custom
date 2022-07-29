@@ -740,4 +740,7 @@ public abstract class Index extends SchemaObject {
         return uniqueRowFactory;
     }
 
+    public Cursor findNthMax(SessionLocal session, boolean firstFlag) {
+        throw DbException.getInternalError(toString());
+    }
 }

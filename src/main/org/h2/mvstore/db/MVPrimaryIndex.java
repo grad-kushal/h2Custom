@@ -316,8 +316,27 @@ public class MVPrimaryIndex extends MVIndex<Long, SearchRow> {
     public Cursor findFirstOrLast(SessionLocal session, boolean first) {
         TransactionMap<Long, SearchRow> map = getMap(session);
         Entry<Long, SearchRow> entry = first ? map.firstEntry() : map.lastEntry();
+        System.out.println("Entry: " + entry);
         return new SingleRowCursor(entry != null ? setRowKey((Row) entry.getValue(), entry.getKey()) : null);
     }
+
+    @Override
+    public Cursor findNthMax(SessionLocal session, boolean first) {
+        TransactionMap<Long, SearchRow> map = getMap(session);
+        Entry<Long, SearchRow> entry = first ? map.firstEntry() : map.lastEntry();
+        System.out.println("Entry: " + entry);
+        map.remove(entry.getKey());
+        Entry<Long, SearchRow> answer = first ? map.firstEntry() : map.lastEntry();
+        System.out.println("Answer: " + answer);
+        map.put(entry.getKey(), entry.getValue());
+        return new SingleRowCursor(answer != null ? setRowKey((Row) answer.getValue(), answer.getKey()) : null);
+    }
+
+//    public Cursor findNthMax(SessionLocal session, boolean first, int n) {
+//        TransactionMap<Long, SearchRow> map = getMap(session);
+//        Entry<Long, SearchRow> entry = first ? map.firstEntry() : map.lastEntry();
+//        return new SingleRowCursor(entry != null ? setRowKey((Row) entry.getValue(), entry.getKey()) : null);
+//    }
 
     @Override
     public boolean needRebuild() {

@@ -3832,7 +3832,7 @@ public class Parser {
 
     private Expression readFunction(Schema schema, String name) {
         String upperName = upperName(name);
-        System.out.println("Schema: " + schema + "UpperName: " + upperName);
+        System.out.println("Schema: " + schema + " UpperName: " + upperName);
         if (schema != null) {
             return readFunctionWithSchema(schema, name, upperName);
         }

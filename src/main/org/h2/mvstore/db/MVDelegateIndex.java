@@ -94,6 +94,11 @@ public class MVDelegateIndex extends MVIndex<Long, SearchRow> {
     }
 
     @Override
+    public Cursor findNthMax(SessionLocal session, boolean first) {
+        return mainIndex.findNthMax(session, first);
+    }
+
+    @Override
     public int getColumnIndex(Column col) {
         if (col.getColumnId() == mainIndex.getMainIndexColumn()) {
             return 0;

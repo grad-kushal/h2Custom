@@ -351,12 +351,14 @@ public abstract class DataAnalysisOperation extends Expression {
         Object data;
         data = groupData.getCurrentGroupExprData(this);
         if (data == null) {
+            System.out.println("Inside getGroupData: " + data + " : " + groupData);
             if (ifExists) {
                 return null;
             }
             data = createAggregateData();
             groupData.setCurrentGroupExprData(this, data);
         }
+        System.out.println("Inside getGroupData 2: " + data + " : " + groupData);
         return data;
     }
 
@@ -410,6 +412,7 @@ public abstract class DataAnalysisOperation extends Expression {
         boolean isOrdered = over.isOrdered();
         Value key = over.getCurrentKey(session);
         partition = groupData.getWindowExprData(this, key);
+        System.out.println("Inside getWindowResult: " + groupData + " " + key);
         if (partition == null) {
             // Window aggregates with FILTER clause may have no collected values
             data = isOrdered ? new ArrayList<>() : createAggregateData();

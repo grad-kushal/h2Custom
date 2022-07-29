@@ -500,6 +500,7 @@ public class Aggregate extends AbstractAggregate implements ExpressionWithFlags 
 
     @Override
     public Value getValue(SessionLocal session) {
+        System.out.println("IN QUICK: " + select.isQuickAggregateQuery());
         return select.isQuickAggregateQuery() ? getValueQuick(session) : super.getValue(session);
     }
 
@@ -511,14 +512,18 @@ public class Aggregate extends AbstractAggregate implements ExpressionWithFlags 
             return ValueBigint.get(table.getRowCount(session));
         case MIN:
         case NTH_MAX: {
+            System.out.println("INSIDE NTH MAX CASE");
             boolean firstFlag = aggregateType == AggregateType.NTH_MAX;
             Index index = getMinMaxColumnIndex();
+            System.out.println("QQQQQQQQ: " + index);
             int sortType = index.getIndexColumns()[0].sortType;
             if ((sortType & SortOrder.DESCENDING) != 0) {
                 firstFlag = !firstFlag;
             }
-            Cursor cursor = index.findFirstOrLast(session, firstFlag);
+            Cursor cursor = index.findNthMax(session, firstFlag);
+            System.out.println("CURSOR: " + cursor);
             SearchRow row = cursor.getSearchRow();
+            System.out.println("ROW: " + row);
             Value v;
             if (row == null) {
                 v = ValueNull.INSTANCE;
@@ -528,6 +533,7 @@ public class Aggregate extends AbstractAggregate implements ExpressionWithFlags 
             return v;
         }
         case MAX: {
+            System.out.println("INSIDE MAX CASE");
             boolean first = aggregateType == AggregateType.MIN;
             Index index = getMinMaxColumnIndex();
             int sortType = index.getIndexColumns()[0].sortType;
@@ -571,6 +577,8 @@ public class Aggregate extends AbstractAggregate implements ExpressionWithFlags 
     @Override
     public Value getAggregatedValue(SessionLocal session, Object aggregateData) {
         AggregateData data = (AggregateData) aggregateData;
+        System.out.println("Inside getAggregatedValue: " + data.getValue(session));
+        System.out.println("Aggregate type: " + aggregateType);
         if (data == null) {
             data = (AggregateData) createAggregateData();
         }
