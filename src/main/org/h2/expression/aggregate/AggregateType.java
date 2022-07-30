@@ -233,6 +233,6 @@ public enum AggregateType {
     /**
      * The aggregate type for nth max element.
      */
-    NTH_MAX,
+    SECOND_MAX,
 
 }

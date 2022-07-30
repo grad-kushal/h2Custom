@@ -51,7 +51,7 @@ final class AggregateDataDefault extends AggregateData {
                 value = v;
             }
             break;
-        case NTH_MAX:
+        case SECOND_MAX:
             if (value == null || session.compare(v, value) > 0) {
                 System.out.println("In AggregateDataDefault: " + value + " : " + v);
                 lower = value;
@@ -113,7 +113,7 @@ final class AggregateDataDefault extends AggregateData {
     @Override
     Value getValue(SessionLocal session) {
         Value v = value;
-        if (aggregateType.equals(AggregateType.NTH_MAX)) {
+        if (aggregateType.equals(AggregateType.SECOND_MAX)) {
             System.out.println("InsideNMAX CASE IN GET VALUE: ");
             v = lower;
         }
